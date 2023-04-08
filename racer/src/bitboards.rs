@@ -17,6 +17,10 @@ impl Bitboard {
         Bitboard { p1: 0, p2: 0 }
     }
 
+    pub fn is_draw(&self) -> bool {
+        self.p1 == !self.p2
+    }
+
     pub fn p1_won(&self) -> bool {
         // compress to the right by one and remove horizontal gaps of 1
         // compress again, if any bits are 1 then p1 has a horizontal win
