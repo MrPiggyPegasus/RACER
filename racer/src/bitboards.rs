@@ -17,6 +17,51 @@ impl Bitboard {
         Bitboard { p1: 0, p2: 0 }
     }
 
+    pub fn p1_won(&self) -> bool {
+        // compress to the right by one and remove horizontal gaps of 1
+        // compress again, if any bits are 1 then p1 has a horizontal win
+        let mut y = self.p1 & (self.p1 >> 8);
+        if y & (y << 16) > 0 {
+            return true;
+        }
+        // check verticals by compressing up by one
+        y = self.p1 & (self.p1 >> 1);
+        if y & (y << 2) > 0 {
+            return true;
+        }
+        y = self.p1 & (self.p1 >> 7); // check \ facing diagonals
+        if y & (y << 14) > 0 {
+            return true;
+        }
+        y = self.p1 & (self.p1 >> 9);
+        if (y & (y >> 2 * 9)) > 0 {
+            return true;
+        }
+        false
+    }
+
+    pub fn p2_won(&self) -> bool {
+        // compress to the right by one and remove horizontal gaps of 1
+        // compress again, if any bits are 1 then p1 has a horizontal win
+        let mut y = self.p2 & (self.p2 >> 8);
+        if y & (y << 16) > 0 {
+            return true;
+        }
+        // check verticals by compressing up by one
+        y = self.p2 & (self.p2 >> 1);
+        if y & (y << 2) > 0 {
+            return true;
+        }
+        y = self.p2 & (self.p2 >> 7); // check \ facing diagonals
+        if y & (y << 14) > 0 {
+            return true;
+        }
+        y = self.p2 & (self.p2 >> 9);
+        if (y & (y >> 2 * 9)) > 0 {
+            return true;
+        }
+        false
+    }
     /// 1 -> true
     /// 2 -> false
     pub fn current_player(&self) -> bool {
@@ -38,6 +83,22 @@ impl Bitboard {
                 }
             }
         }
+    }
+
+    pub fn format_bb(bb: u64) {
+        let mut output = String::new();
+        for row in (0..5).rev() {
+            for col in 0..7 {
+                let target_bit = (2 as u64).pow(row + (col * 8));
+                if (bb & target_bit) > 0 {
+                    output += "1  "
+                } else {
+                    output += ".  "
+                }
+            }
+            output += "\n";
+        }
+        println!("{}", output);
     }
 
     pub fn to_string(&self) -> String {
