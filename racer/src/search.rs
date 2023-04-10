@@ -2,15 +2,12 @@ use crate::bitboards::Bitboard;
 
 pub fn search(pos: &mut Bitboard, mut alpha: i8, mut beta: i8, depth: u64) -> (i8, i8) {
     if pos.p1_won() {
-        println!("p1_won:\n{}", pos.to_string());
         return ((100 - pos.number_of_pieces()), 9);
     }
     if pos.p2_won() {
-        println!("p2_won:\n{}", pos.to_string());
         return ((-100) + pos.number_of_pieces(), 9);
     }
     if pos.is_draw() || depth == 0 {
-        println!("draw:\n{}", pos.to_string());
         return (0, 9);
     }
     return if pos.current_player() {
