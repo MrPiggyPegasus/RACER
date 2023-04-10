@@ -1,2 +1,3 @@
 # RACER
-Rewrite of the Advanced Connect 4 Engine in Rust
+Rewrite of the Advanced Connect 4 Engine in Rust.
+* RACER IS STILL IN EARLY STAGES OF DEVELOPMENT AND IT PROBABLY DOESNT WORK RIGHT NOW
