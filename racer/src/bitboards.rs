@@ -55,7 +55,7 @@ impl Bitboard {
         }
         // check \ facing diagonals
         if  (self.p2 & (self.p2 >> 7)) & ((self.p2 & (self.p2 >> 7)) >> 14) != 0 {
-            return trued
+            return true
         }
         // check / facing diagonals
         if ((self.p2 & (self.p2 >> 9)) & ((self.p2 & (self.p2 >> 9)) >> 18)) != 0 {
