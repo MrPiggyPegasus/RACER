@@ -19,26 +19,26 @@ impl Bitboard {
     }
 
     pub fn is_draw(&self) -> bool {
-        self.p1 == !self.p2
+        self.p1 | self.p2 == 17802464409370431
     }
 
     pub fn p1_won(&self) -> bool {
         // compress to the right by one and remove horizontal gaps of 1
         // compress again, if any bits are 1 then p1 has a horizontal win
-        if (self.p1 & (self.p1 >> 8)) & ((self.p1 & (self.p1 >> 8)) << 16) != 0 {
-            return true;
+        if (self.p1 & (self.p1 >> 8)) & ((self.p1 & (self.p1 >> 8)) >> 16) != 0 {
+            return true
         }
         // check verticals by compressing up by one
         if (self.p1 & (self.p1 >> 1)) & ((self.p1 & (self.p1 >> 1)) >> 2) != 0 {
-            return true;
+            return true
         }
         // check \ facing diagonals
         if  (self.p1 & (self.p1 >> 7)) & ((self.p1 & (self.p1 >> 7)) >> 14) != 0 {
-            return true;
+            return true
         }
         // check / facing diagonals
-        if ((self.p1 & (self.p1 >> 9)) & ((self.p1 & (self.p1 >> 9)) >> 2 * 9)) != 0 {
-            return true;
+        if ((self.p1 & (self.p1 >> 9)) & ((self.p1 & (self.p1 >> 9)) >> 18)) != 0 {
+            return true
         }
         false
     }
@@ -46,20 +46,20 @@ impl Bitboard {
     pub fn p2_won(&self) -> bool {
         // compress to the right by one and remove horizontal gaps of 1
         // compress again, if any bits are 1 then p1 has a horizontal win
-        if (self.p2 & (self.p2 >> 8)) & ((self.p2 & (self.p2 >> 8)) << 16) != 0 {
-            return true;
+        if (self.p2 & (self.p2 >> 8)) & ((self.p2 & (self.p2 >> 8)) >> 16) != 0 {
+            return true
         }
         // check verticals by compressing up by one
         if (self.p2 & (self.p2 >> 1)) & ((self.p2 & (self.p2 >> 1)) >> 2) != 0 {
-            return true;
+            return true
         }
         // check \ facing diagonals
         if  (self.p2 & (self.p2 >> 7)) & ((self.p2 & (self.p2 >> 7)) >> 14) != 0 {
-            return true;
+            return trued
         }
         // check / facing diagonals
-        if ((self.p2 & (self.p2 >> 9)) & ((self.p2 & (self.p2 >> 9)) >> 2 * 9)) != 0 {
-            return true;
+        if ((self.p2 & (self.p2 >> 9)) & ((self.p2 & (self.p2 >> 9)) >> 18)) != 0 {
+            return true
         }
         false
     }
@@ -68,23 +68,23 @@ impl Bitboard {
     pub fn current_player(&self) -> bool {
         self.p1.count_ones() <= self.p2.count_ones()
     }
-    
+
     pub fn is_legal_move(&self, col:i8) -> bool {
-        self.p1 & (2 as u64).pow((col * 8) as u32 + 5) !=0
-        && self.p2 & (2 as u64).pow((col * 8) as u32 + 5) != 0
+        self.p1 & 1 << ((col * 8) as u32 + 5) ==0
+        && self.p2 & 1 << ((col * 8) as u32 + 5) == 0
     }
 
     pub fn play(&mut self, col: i8) {
         for row in 0..6 {
             // ensure that the slot is empty
-            if (self.p1 & (2 as u64).pow(row as u32 + (col * 8) as u32)) == 0
-                && (self.p2 & (2 as u64).pow(row as u32 + (col * 8) as u32)) == 0
+            if (self.p1 & 1 << (row as u32 + (col * 8) as u32)) == 0
+                && (self.p2 & 1 << (row as u32 + (col * 8) as u32)) == 0
             {
                 if self.current_player() {
-                    self.p1 ^= (2 as u64).pow(row as u32 + (col * 8) as u32) as u64;
+                    self.p1 ^= 1 << row+ (col * 8);
                     return
                 } else {
-                    self.p2 ^= (2 as u64).pow(row as u32 + (col * 8) as u32) as u64;
+                    self.p2 ^= 1 << row+ (col * 8);
                     return
                 }
             }
@@ -92,16 +92,19 @@ impl Bitboard {
     }
 
     pub fn pop(&mut self, col: i8) {
-        for row in 1..6 {
-            if (self.p1 & (2 as u64).pow(row as u32 + (col * 8) as u32)) == 0
-                && (self.p2 & (2 as u64).pow(row as u32 + (col * 8) as u32)) == 0
-            {
-                if self.current_player() {
-                    self.p2 ^= (2 as u64).pow(row - 1 as u32 + (col * 8) as u32);
-                } else {
-                    self.p1 ^= (2 as u64).pow(row - 1 as u32 + (col * 8) as u32);
+        if !self.current_player() {
+            for row in (0..6).rev() {
+                if self.p1 & (1 << ((col * 8) + row)) > 0 {
+                    self.p1 ^= 1 << ((col * 8) + row);
+                    return
                 }
-                return
+            }
+        } else {
+            for row in (0..6).rev() {
+                if self.p2 & (1 << ((col * 8) + row)) > 0 {
+                    self.p2 ^= 1 << ((col * 8) + row);
+                    return
+                }
             }
         }
     }
@@ -110,13 +113,16 @@ impl Bitboard {
         let mut output = String::new();
         for row in (0..5).rev() {
             for col in 0..7 {
-                let target_bit = (2 as u64).pow(row + (col * 8));
+                let target_bit = 1 << (row + (col * 8));
                 if (self.p1 & target_bit) > 0 {
-                    output += "1  "
+                    output += "X  "
                 } else if (self.p2 & target_bit) > 0 {
-                    output += "2  "
+                    output += "O  "
                 } else {
                     output += ".  "
+                }
+                if (self.p1 & target_bit > 0) && (self.p2 & target_bit > 0) {
+                    println!("aaa");
                 }
             }
             output += "\n";
