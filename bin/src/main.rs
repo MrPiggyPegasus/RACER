@@ -1,11 +1,14 @@
-use std::time::SystemTime;
+// Copyright (c) 2023.  "MrPiggyPegasus"
+// This file is part of the RACER connect 4 engine,see
+// https://github.com/MrPiggyPegasus/RACER
+// All components of this project are subject to the MIT License, see LICENSE.txt
 
-use racer::bitboards::*;
-use racer::search::*;
+mod nogui;
+
+use racer::Board;
+use crate::nogui::play;
+
 
 fn main() {
-    let mut pos = Bitboard::new();
-    let start = SystemTime::now();
-    println!("{}", search(&mut pos, i8::MIN, i8::MAX, 15).1);
-    println!("time: {}s", start.elapsed().unwrap().as_millis() as f64 / 1000 as f64);
+    play(1, Board::new());
 }

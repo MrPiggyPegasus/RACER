@@ -1,3 +1,8 @@
+// Copyright (c) 2023.  "MrPiggyPegasus"
+// This file is part of the RACER connect 4 engine,see
+// https://github.com/MrPiggyPegasus/RACER
+// All components of this project are subject to the MIT License, see LICENSE.txt
+
 use crate::bitboards::Bitboard;
 
 pub fn search(pos: &mut Bitboard, mut alpha: i8, mut beta: i8, depth: u64) -> (i8, i8) {
@@ -13,12 +18,12 @@ pub fn search(pos: &mut Bitboard, mut alpha: i8, mut beta: i8, depth: u64) -> (i
     return if pos.current_player() {
         let mut max_eval = i8::MIN + 10;
         let mut max_move = 9;
-        for col in vec![3,4,2,5,1,6,0] {
+        for col in vec![3, 4, 2, 5, 1, 6, 0] {
             if !pos.is_legal_move(col) {
-                continue
+                continue;
             }
             pos.play(col);
-            let eval = search(pos, alpha, beta, depth-1).0;
+            let eval = search(pos, alpha, beta, depth - 1).0;
             pos.pop(col);
             if eval > max_eval {
                 max_eval = eval;
@@ -35,18 +40,18 @@ pub fn search(pos: &mut Bitboard, mut alpha: i8, mut beta: i8, depth: u64) -> (i
     } else {
         let mut min_eval = i8::MAX - 10;
         let mut min_move = 9;
-        for col in vec![3,4,2,5,1,6,0] {
+        for col in vec![3, 4, 2, 5, 1, 6, 0] {
             if !pos.is_legal_move(col) {
-                continue
+                continue;
             }
             pos.play(col);
-            let eval = search(pos, alpha, beta, depth-1).0;
+            let eval = search(pos, alpha, beta, depth - 1).0;
             pos.pop(col);
             if eval < min_eval {
                 min_eval = eval;
                 min_move = col;
                 if eval <= alpha {
-                    break
+                    break;
                 }
                 if eval < beta {
                     beta = eval
@@ -54,5 +59,5 @@ pub fn search(pos: &mut Bitboard, mut alpha: i8, mut beta: i8, depth: u64) -> (i
             }
         }
         (min_eval, min_move)
-    }
+    };
 }
