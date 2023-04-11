@@ -56,15 +56,26 @@ impl Board {
         if self.is_over() {
             return Err(PositionAlreadyOverError());
         }
-        Ok(search(&mut self.bitboard, i8::MIN, i8::MAX, 13).1)
+        let best_move = search(&mut self.bitboard, i8::MIN, i8::MAX, 13).1;
+        if best_move != 9 {
+            return Ok(best_move)
+        } else {
+            // emergency mode if minimax fails to provide a move
+            for i in 0..7 {
+                if self.is_valid_move(i) {
+                    return Ok(i)
+                }
+            }
+        }
+        Err(PositionAlreadyOverError())
     }
 
     pub fn current_player(&self) -> i8 {
         (self.bitboard.current_player() as i8 * 2) - 1
     }
 
-    pub fn is_valid_move(&self, col:i8) -> bool {
-        self.bitboard.is_legal_move(col)
+    pub fn is_valid_move(&self, col: i8) -> bool {
+        col >= 0 && col < 8 && self.bitboard.is_legal_move(col)
     }
 
     pub fn eval(&mut self) -> Result<i8, PositionAlreadyOverError> {

@@ -72,15 +72,14 @@ impl Bitboard {
         }
         false
     }
+    pub fn is_legal_move(&self, col: i8) -> bool {
+        self.p1 & (1 << ((col * 8) + 4)) == 0 && self.p2 & (1 << ((col * 8) + 4)) == 0
+    }
+
     /// 1 -> true
     /// 2 -> false
     pub fn current_player(&self) -> bool {
         self.p1.count_ones() <= self.p2.count_ones()
-    }
-
-    pub fn is_legal_move(&self, col: i8) -> bool {
-        self.p1 & (1 << ((col * 8) as u32 + 4)) == 0 &&
-        self.p2 & (1 << ((col * 8) as u32 + 4)) == 0
     }
 
     pub fn play(&mut self, col: i8) {

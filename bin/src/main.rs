@@ -5,10 +5,10 @@
 
 mod nogui;
 
+use crate::nogui::{menu, play};
 use racer::Board;
-use crate::nogui::play;
-
 
 fn main() {
-    play(1, Board::new());
+    println!("{}", Board::new().is_valid_move(19));
+    menu()
 }
