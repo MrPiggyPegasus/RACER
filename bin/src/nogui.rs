@@ -8,9 +8,9 @@ use std::io::{stdin, stdout, Write};
 
 pub fn menu() {
     loop {
-        println!("Select an option:");
+        println!("\n\n\n\n\n\n\nSelect an option:");
         println!("1. Play against engine");
-        println!("2. Play against human");
+        println!("2. Play from PGN");
         println!("3. Get best move from PGN");
         println!("4. Exit");
 
@@ -23,12 +23,16 @@ pub fn menu() {
 
         match input.trim().parse() {
             Ok(1) => play_against_engine(),
-            Ok(2) => play_against_human(),
+            Ok(2) => play_from_pgn(),
             Ok(3) => get_best_move_from_pgn(),
             Ok(4) => break,
             _ => println!("Invalid input, please try again"),
         }
     }
+}
+
+fn play_from_pgn() {
+    println!("unimplemented");
 }
 
 fn play_against_engine() {
@@ -64,14 +68,8 @@ fn play_against_engine() {
     }
 }
 
-fn play_against_human() {
-    println!("Playing against human...");
-    // implementation code for playing against human goes here
-}
-
 fn get_best_move_from_pgn() {
-    println!("Getting best move from PGN...");
-    // implementation code for getting best move from PGN goes here
+
 }
 
 pub fn play(computer_player: i8, mut pos: Board) {

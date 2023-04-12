@@ -10,28 +10,58 @@ use std::fmt::Formatter;
 
 pub struct Board {
     pub bitboard: Bitboard,
+    pub pgn: String,
 }
 
 impl Board {
     pub fn new() -> Board {
         Board {
             bitboard: Bitboard::new(),
+            pgn: String::from("")
+        }
+    }
+
+    pub fn parse_pgn(pgn: &str) -> Result<Board, InvalidPgnError> {
+        if Board::is_valid_pgn(pgn) {
+            let mut pos = Board::new();
+            for char in pgn.chars() {
+                pos.play(char.to_string().parse::<i8>().unwrap()).unwrap()
+            }
+            Ok(pos)
+        } else {
+            Err(InvalidPgnError())
         }
     }
 
     pub fn play(&mut self, col: i8) -> Result<(), IllegalMoveError> {
-        if !self.bitboard.is_legal_move(col) {
-            println!("a");
+        if !self.is_valid_move(col) {
             Err(IllegalMoveError())
         } else if self.bitboard.is_over() {
-            println!("b");
             Err(IllegalMoveError())
         } else {
             self.bitboard.play(col);
+            self.pgn += &*col.to_string();
             Ok(())
         }
     }
 
+    pub fn is_valid_pgn(pgn: &str) -> bool {
+        let mut pos = Board::new();
+        for char in pgn.chars() {
+            match char.to_string().parse::<i8>() {
+                Ok(col) => {
+                    match pos.play(col) {
+                        Ok(_) => (),
+                        Err(_) => return false
+                    }
+                }
+                Err(_) => return false
+            }
+        }
+        true
+    }
+
+    // composition moment
     pub fn to_string(&self) -> String {
         self.bitboard.to_string()
     }
@@ -58,12 +88,12 @@ impl Board {
         }
         let best_move = search(&mut self.bitboard, i8::MIN, i8::MAX, 13).1;
         if best_move != 9 {
-            return Ok(best_move)
+            return Ok(best_move);
         } else {
             // emergency mode if minimax fails to provide a move
             for i in 0..7 {
                 if self.is_valid_move(i) {
-                    return Ok(i)
+                    return Ok(i);
                 }
             }
         }
@@ -75,7 +105,7 @@ impl Board {
     }
 
     pub fn is_valid_move(&self, col: i8) -> bool {
-        col >= 0 && col < 8 && self.bitboard.is_legal_move(col)
+        col >= 0 && col < 7 && self.bitboard.is_legal_move(col)
     }
 
     pub fn eval(&mut self) -> Result<i8, PositionAlreadyOverError> {
@@ -106,5 +136,12 @@ pub struct PositionAlreadyOverError();
 impl fmt::Display for PositionAlreadyOverError {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         write!(f, "That position is already over, so it can't be analysed!")
+    }
+}
+#[derive(Debug, Clone)]
+pub struct InvalidPgnError();
+impl fmt::Display for InvalidPgnError{
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        write!(f, "That PGN is invalid!")
     }
 }
