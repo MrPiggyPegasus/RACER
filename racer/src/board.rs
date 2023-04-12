@@ -17,8 +17,26 @@ impl Board {
     pub fn new() -> Board {
         Board {
             bitboard: Bitboard::new(),
-            pgn: String::from("")
+            pgn: String::from(""),
         }
+    }
+
+
+    pub fn undo_move(&mut self) -> Result<(), NoMoveToUndoError>{
+        if self.pgn.len() == 0 {
+            return Err(NoMoveToUndoError())
+        }
+        self.bitboard.pop(
+            self.pgn
+                .chars()
+                .nth(self.pgn.len() - 1)
+                .unwrap()
+                .to_string()
+                .parse()
+                .unwrap(),
+        );
+        self.pgn.truncate(self.pgn.len() - 1);
+        Ok(())
     }
 
     pub fn parse_pgn(pgn: &str) -> Result<Board, InvalidPgnError> {
@@ -49,13 +67,11 @@ impl Board {
         let mut pos = Board::new();
         for char in pgn.chars() {
             match char.to_string().parse::<i8>() {
-                Ok(col) => {
-                    match pos.play(col) {
-                        Ok(_) => (),
-                        Err(_) => return false
-                    }
-                }
-                Err(_) => return false
+                Ok(col) => match pos.play(col) {
+                    Ok(_) => (),
+                    Err(_) => return false,
+                },
+                Err(_) => return false,
             }
         }
         true
@@ -140,8 +156,15 @@ impl fmt::Display for PositionAlreadyOverError {
 }
 #[derive(Debug, Clone)]
 pub struct InvalidPgnError();
-impl fmt::Display for InvalidPgnError{
+impl fmt::Display for InvalidPgnError {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         write!(f, "That PGN is invalid!")
+    }
+}
+#[derive(Debug, Clone)]
+pub struct NoMoveToUndoError();
+impl fmt::Display for NoMoveToUndoError {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        write!(f, "There are no more moves to undo!")
     }
 }
