@@ -5,13 +5,8 @@
 
 mod nogui;
 
-use racer::Board;
 use crate::nogui::menu;
 
 fn main() {
-    let mut pos = Board::new();
-    pos.play(2).unwrap();
-    pos.play(2).unwrap();
-    pos.undo_move();
-    println!("{}", pos.to_string());
+    menu()
 }
