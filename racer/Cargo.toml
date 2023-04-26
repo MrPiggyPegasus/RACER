@@ -1,9 +1,12 @@
 [package]
-name = "racer"
+description = "A connect-4 library for move generation/validation using the RACER engine."
+homepage = "https://github.com/MrPiggyPegasus/RACER"
+name = "connect-4-bot"
 version = "0.1.0"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
+license = "MIT"
+keywords = ["connect4", "connect-4", "engine", "ai"]
+categories = ["algorithms"]
+readme = "README.md"
 
 [dependencies]
