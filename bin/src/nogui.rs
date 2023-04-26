@@ -3,7 +3,7 @@
 // https://github.com/MrPiggyPegasus/RACER
 // All components of this project are subject to the MIT License, see LICENSE.txt
 
-use racer::Board;
+use racerbot::Board;
 use std::io::{stdin, stdout, Write};
 
 pub fn menu() {

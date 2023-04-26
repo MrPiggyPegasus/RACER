@@ -1,7 +1,7 @@
 [package]
 description = "A connect-4 library for move generation/validation using the RACER engine."
 homepage = "https://github.com/MrPiggyPegasus/RACER"
-name = "racer"
+name = "racerbot"
 version = "1.0.0"
 edition = "2021"
 license = "MIT"
