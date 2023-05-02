@@ -68,9 +68,7 @@ fn play_against_engine() {
     }
 }
 
-fn get_best_move_from_pgn() {
-
-}
+fn get_best_move_from_pgn() {}
 
 pub fn play(computer_player: i8, mut pos: Board) {
     if computer_player == pos.current_player() {

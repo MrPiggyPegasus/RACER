@@ -99,22 +99,27 @@ impl Bitboard {
         }
     }
 
+    /// removes the highest token from a column
     pub fn pop(&mut self, col: i8) {
         if !self.current_player() {
             for row in (0..6).rev() {
-                if self.p1 & (1 << ((col * 8) + row)) > 0 {
+                if self.p1 & (1 << ((col * 8) + row)) != 0 {
                     self.p1 ^= 1 << ((col * 8) + row);
                     return;
                 }
             }
         } else {
             for row in (0..6).rev() {
-                if self.p2 & (1 << ((col * 8) + row)) > 0 {
+                if self.p2 & (1 << ((col * 8) + row)) != 0 {
                     self.p2 ^= 1 << ((col * 8) + row);
                     return;
                 }
             }
         }
+    }
+
+    pub fn is_empty_column(&self, col: i8) -> bool {
+        ((self.p1 & (1 << (col * 8))) == 0) && (self.p2 & (1 << (col * 8))) == 0
     }
 
     pub fn to_string(&self) -> String {
