@@ -134,9 +134,6 @@ impl Bitboard {
                 } else {
                     output += ".  "
                 }
-                if (self.p1 & target_bit > 0) && (self.p2 & target_bit > 0) {
-                    println!("aaa");
-                }
             }
             output += "\n";
         }
